@@ -1,11 +1,12 @@
 #!/bin/bash
 
-composer install
+# Устанавливаем зависимости, если их ещё нет
+composer install --no-interaction --prefer-dist --optimize-autoloader
 
-php artisan key:generate
+# Генерируем ключ (только если он пустой)
+if [ -z "$APP_KEY" ]; then
+  php artisan key:generate
+fi
 
-composer require laravel/octane --with-all-dependencies
-
-php artisan octane:install --server="swoole"
-
-php artisan octane:start --server="swoole" --host="0.0.0.0" --workers=${SWOOLE_WORKERS} --task-workers=${SWOOLE_TASK_WORKERS} --max-requests=${SWOOLE_MAX_REQUESTS} --watch ;
+# Запускаем Octane (Swoole)
+php artisan octane:start --server="swoole" --host="0.0.0.0" --port=8000 --workers=1 --task-workers=1

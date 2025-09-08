@@ -61,3 +61,24 @@ _Выгрузка только за текущий день_
 
 [Ссылка на коллекцию Postman](https://www.postman.com/cy322666/workspace/app-api-test/overview)
 
+
+## Доступы к базе данных
+
+- Host: `localhost`  
+- Port: `3307`  
+- Database: `mydatabase`  
+- User: `root`  
+- Password: `root`
+
+## Таблицы
+
+- `orders`
+- `sales`
+- `stocks`
+- `incomes`
+
+## Работа с дампом
+
+Экспорт базы данных в дамп:
+```bash
+docker exec -i mysql_db mysqldump -u root -proot mydatabase > dump.sql

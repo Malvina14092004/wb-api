@@ -9,6 +9,24 @@ services:
             - "6969:8000"
         networks:
             - cluster
+        depends_on:
+          - db
+        working_dir: /app
+        command: php artisan serve --host=0.0.0.0 --port=8000
+
+    db:
+      image: mysql:8
+      container_name: mysql_db
+      restart: always
+      environment:
+        MYSQL_DATABASE: mydatabase
+        MYSQL_USER: wb_user
+        MYSQL_PASSWORD: wb_pass
+        MYSQL_ROOT_PASSWORD: root
+      ports:
+        - "3307:3306"
+      networks:
+        - cluster
 networks:
     cluster:
         name: cluster

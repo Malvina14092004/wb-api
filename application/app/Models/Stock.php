@@ -9,6 +9,11 @@ class Stock extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'external_id',
+        'payload'
+    ];
+
     protected $hidden = [
         'updated_at',
         'created_at',

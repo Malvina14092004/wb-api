@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'external_id',
+        'payload'
+    ];
 
     protected $hidden = [
         'updated_at',

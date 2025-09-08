@@ -58,6 +58,7 @@ RUN chown -R www-data:www-data /app
 
 #RUN chmod -R 777 storage/
 
-COPY ./start.sh /
-RUN chmod +x /start.sh
-ENTRYPOINT ["/start.sh"]
+#COPY ../../start.sh /start.sh
+#RUN chmod +x /start.sh
+#ENTRYPOINT ["/start.sh"]
+CMD ["bash"]
