@@ -53,45 +53,63 @@ class WbApiService
             if (empty($items)) {
                 break;
             }
-
             $all = array_merge($all, $items);
 
             if (count($items) < $limitPerPage) {
                 break; // больше страниц нет
             }
-
             $page++;
         }
 
         return $all;
     }
+    protected  function get(string $endpoint, array $params = []): array
+    {
+        $params['key'] = $this->key;
+        $response = Http::get("{$this->host}{$endpoint}", $params);
+        if ($response->failed()) {
+            throw new \Exception("Ошибка при запросе API: {$response->status()} - " . $response->body());
+        }
+        return $response->json();
+    }
+
     public function getOrders(string $from, string $to, int $page = 1): array
     {
-        $url = "{$this->host}/api/orders?dateFrom={$from}&dateTo={$to}&page={$page}&limit={$this->limit}&key={$this->key}";
-
-        $response = Http::get($url);
-        return $response->json();
+        return $this->get('/api/orders', [
+            'dateFrom' => $from,
+            'dateTo' => $to,
+            'page' => $page,
+            'limit' => $this->limit,
+        ]);
     }
 
     public function getSales(string $from, string $to, int $page = 1): array
     {
-        $url = "{$this->host}/api/sales?dateFrom={$from}&dateTo={$to}&page={$page}&limit={$this->limit}&key={$this->key}";
-        $response = Http::get($url);
-        return $response->json();
+        return $this->get('/api/sales', [
+            'dateFrom' => $from,
+            'dateTo' => $to,
+            'page' => $page,
+            'limit' => $this->limit,
+        ]);
     }
 
     public function getStocks(string $from, int $page = 1): array
     {
-        $url = "{$this->host}/api/stocks?dateFrom={$from}&page={$page}&limit={$this->limit}&key={$this->key}";
-        $response = Http::get($url);
-        return $response->json();
+        return $this->get('/api/stocks', [
+            'dateFrom' => $from,
+            'page' => $page,
+            'limit' => $this->limit,
+        ]);
     }
 
     public function getIncomes(string $from, string $to, int $page = 1): array
     {
-        $url = "{$this->host}/api/incomes?dateFrom={$from}&dateTo={$to}&page={$page}&limit={$this->limit}&key={$this->key}";
-        $response = Http::get($url);
-        return $response->json();
+        return $this->get('/api/incomes', [
+            'dateFrom' => $from,
+            'dateTo' => $to,
+            'page' => $page,
+            'limit' => $this->limit,
+        ]);
     }
 }
 

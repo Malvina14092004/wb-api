@@ -30,8 +30,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'wbapi' => [
-        'host' => env('API_HOST'),
-        'key' => env('API_KEY'),
+        'host' => env('WBAPI_HOST'),
+        'key' => env('WBAPI_KEY'),
     ]
 
 ];

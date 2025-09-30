@@ -77,8 +77,14 @@ _Выгрузка только за текущий день_
 - `stocks`
 - `incomes`
 
-## Работа с дампом
 
-Экспорт базы данных в дамп:
-```bash
-docker exec -i mysql_db mysqldump -u root -proot mydatabase > dump.sql
+## Восстановление базы MySQL из дампа 
+
+Эта команда создаёт новую базу, восстанавливает дамп и выводит список таблиц.
+
+docker-compose exec -T db mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS restored_db;
+
+docker-compose exec -T db mysql -u root -proot restored_db < dump.sql 
+
+docker-compose exec -T db mysql -u root -proot -e "USE restored_db; SHOW TABLES;
+
