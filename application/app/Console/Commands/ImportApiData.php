@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Console\Commands;
-
-use Facade\Ignition\DumpRecorder\Dump;
 use Illuminate\Console\Command;
 use App\Services\WbApiService;
 use App\Models\Order;
@@ -24,7 +22,7 @@ class ImportApiData extends Command
      *
      * @var string
      */
-    protected $description = 'Импорт данных из WB API (orders, sales, stocks, incomes)';
+    protected $description = 'Импорт данных из WB API';
 
     /**
      * Create a new command instance.
@@ -47,16 +45,15 @@ class ImportApiData extends Command
         $from = $this->option('from');
         $to = $this->option('to');
         /**
-         * 📦 Импорт заказов
+         *заказы
          */
-        $this->info("Импорт заказов...");
         $page = 1;
         do {
             $orders = $this->api->getOrders($from, $to, $page);
             foreach ($orders['data'] ?? [] as $order) {
                 Order::updateOrCreate(
-                    ['external_id' => $order['income_id'] ?: $order['g_number']], // уникальный ключ
-                    ['payload' => json_encode($order)] // сохраняем весь объект в JSON
+                    ['external_id' => $order['income_id'] ?: $order['g_number']],
+                    ['payload' => json_encode($order)]
                 );
             }
             $page++;
@@ -65,15 +62,14 @@ class ImportApiData extends Command
         $this->info("Заказы импортированы");
 
         /**
-         * 💰 Импорт продаж
+         * продажа
          */
-        $this->info("Импорт продаж...");
         $page = 1;
         do {
             $sales = $this->api->getSales($from, $to, $page);
             foreach ($sales['data'] ?? [] as $sale) {
                 Sale::updateOrCreate(
-                    ['external_id' => $sale['g_number']], // используем g_number как уникальный ключ
+                    ['external_id' => $sale['g_number']],
                     ['payload' => json_encode($sale)]
                 );
             }
@@ -82,30 +78,27 @@ class ImportApiData extends Command
         $this->info("Продажи импортированы");
 
         /**
-         * 🏬 Импорт складов
-         * (только по dateFrom, без dateTo)
+         *склады
          */
-        $this->info("Импорт складов...");
         $stocks = $this->api->getStocks(now()->toDateString());
         foreach ($stocks['data'] ?? [] as $stock) {
             Stock::updateOrCreate(
-                ['external_id' => $stock['supplier_article']], // используем g_number как уникальный ключ
+                ['external_id' => $stock['supplier_article']],
                 ['payload' => json_encode($stock)]
             );
         }
         $this->info("Склады импортированы");
 
         /**
-         * 📊 Импорт доходов
+         *доходы
          */
-        $this->info("Импорт доходов...");
         $page = 1;
         do {
             $incomes = $this->api->getIncomes($from, $to, $page);
             dump($incomes);
             foreach ($incomes['data'] ?? [] as $income) {
                 Income::updateOrCreate(
-                    ['external_id' => $income['income_id']], // используем g_number как уникальный ключ
+                    ['external_id' => $income['income_id']],
                     ['payload' => json_encode($income)]
                 );
             }
